@@ -15,44 +15,76 @@ colors.setTheme({
 // MONGO SCHEMA
 var campgroundSchema = new mongoose.Schema({
     name:  String,
-    image: String
+    image: String,
+    description: String
 });
 var Campground = mongoose.model("Campground", campgroundSchema);
 
-Campground.create({
-    name: "backwoods boys",
-    image: "https://farm7.staticflickr.com/6068/6042217185_89a79dbc00.jpg"},
-    function(err, Campground){
-    if(err){
-        console.log("error");
-    }else{
-        console.log("New");
-        console.log(Campground);
-    }
-});
-
+// Campground.create(
+//     {
+//     name: "backwoods boys",
+//     image: "https://farm7.staticflickr.com/6068/6042217185_89a79dbc00.jpg",
+//     description: "Achres of wild life, fishing, and fun. No bathrooms or showers only fresh river water"
+//     },
+//     function(err, Campground){
+//     if(err){
+//         console.log("error");
+//     }else{
+//         console.log("New");
+//         console.log(Campground);
+//     }
+// });
 
 app.get("/", function(req, res){
    res.render("landing"); 
 });
 
+// INDEX - show all campgrounds
 app.get("/campgrounds", function(req, res){
-    res.render("campgrounds", {campgrounds: campgrounds}); 
+   
+    Campground.find({}, function(err, allCampgrounds){
+       if(err){
+           console.log("err");
+       }else{
+           res.render("index", {campgrounds: allCampgrounds}); 
+       } 
+    });
 });
 
+// CREATE - add new campground
 app.post("/campgrounds", function(req, res){
     //get data from form
     var name = req.body.name;
     var image = req.body.image;
-    var newCampground = {name: name, image: image};
-    campgrounds.push(newCampground);
-    //redirect back to campgrounds 
-    res.redirect("/campgrounds");
+    var desc = req.body.description;
+    var newCampground = {name: name, image: image, description: desc};
+    Campground.create(newCampground, function(err, newlyCreated){
+       if(err){
+           console.log("error");
+       }else{
+            //redirect back to campgrounds 
+            res.redirect("/campgrounds");
+       } 
+    });
 });    
 
+// NEW - form to create new campground
 app.get("/campgrounds/new", function(req, res){
     res.render("new.ejs");
 });    
+
+// SHOW - shows more info from a specific ID
+app.get("/campgrounds/:id", function(req, res){
+    // find id
+    Campground.findById(req.params.id, function(err, foundCampground){
+       if(err){
+        console.log("err");
+       }else{
+        // show template with for that campground
+        res.render("show", {campground: foundCampground});       
+       } 
+    });
+});  
 
 
 app.listen(process.env.PORT || 8080, () => console.log(catMe('nyan').rainbow));
