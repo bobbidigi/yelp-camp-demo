@@ -55,9 +55,9 @@ app.get("/campgrounds/new", function(req, res){
 });    
 
 
-
-app.listen(process.env.PORT, process.env.IP, function(){
-    console.log('YELP CAMP SERVER YELP YELP CAMP SERVER '.custom);
-    console.log(catMe('nyan').rainbow);
-    console.log('YELP CAMP SERVER YELP YELP CAMP SERVER'.custom);
-});
+app.listen(process.env.PORT || 8080, () => console.log(catMe('nyan').rainbow));
+//app.listen(process.env.PORT, process.env.IP, function(){
+//    console.log('YELP CAMP SERVER YELP YELP CAMP SERVER '.custom);
+//    console.log(catMe('nyan').rainbow);
+//    console.log('YELP CAMP SERVER YELP YELP CAMP SERVER'.custom);
+//});
